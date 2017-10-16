@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Damian_Gavin_Lab1</title>
+
+    <style type="text/css">
+        #canvasOne {
+
+            border: 10px solid black;
+        }
+    </style>
+
+</head>
+
+<body onload="setTimeout(myFunction, 2000);setTimeout(myFunction1, 2000);">
+
+
+    <canvas id="canvasOne" width="1320" height="600"></canvas>
+
+    <script type="text/javascript">
+        // Gets a handle to the element with id canvasOne.
+        var canvas = document.getElementById("canvasOne");
+        // Set the canvas up for drawing in 2D.
+        var ctx = canvas.getContext("2d");
+        // Set the fill colour to bright red.
+        ctx.lineWidth = 4;
+        // make the border on the shapes a bit larger
+        ctx.fillStyle = "orange";
+        ctx.strokeStyle = "red";
+        // Create a filled rectangle at co-ordinates (50,50)
+        // with height and width set to 200&100.
+        //ctx.strokeRect draws outline
+        ctx.strokeRect(50, 50, 200, 100);
+        ctx.fillRect(50, 50, 200, 100);
+
+        //draw a circle within rectangle
+        ctx.arc(170, 400, 100, 0, 2 * Math.PI);
+
+        //colour in Bottom left circle opacity 0.85
+        ctx.fillStyle = "rgba(255, 255, 0, 0.85";
+        ctx.fill();
+
+        //another rectangle
+        ctx.fillStyle = "rgba(0, 0, 255, 0.56";
+        ctx.strokeRect(200, 100, 100, 450);
+        ctx.fillRect(200, 100, 100, 450);
+        ctx.strokeStyle = "blue";//blue outline
+        ctx.stroke();
+
+        //another circle(green one)
+        ctx.beginPath();
+        ctx.arc(380, 180, 100, 0, 2 * Math.PI);
+        ctx.strokeStyle = "red";
+        ctx.stroke();
+        ctx.fillStyle = "rgba(0, 255, 0, 0.56)";
+        ctx.fill();
+
+        //another circle(pacmans target)
+        ctx.beginPath();
+        ctx.arc(800, 300, 100, 0, 2 * Math.PI);
+        ctx.strokeStyle = "black";
+        ctx.stroke();
+        ctx.fillStyle = "rgba(0, 0, 255, 0.56)";
+        ctx.fill();
+
+        //draw a square with circle in it(bottom right)
+        ctx.fillStyle = "#FF00FF";
+        ctx.strokeRect(1000, 300, 200, 200);
+        ctx.fillRect(1000, 300, 200, 200);
+        //circle
+        ctx.beginPath();
+        ctx.arc(1100, 400, 100, 0, 2 * Math.PI);
+        ctx.strokeStyle = "red";
+        ctx.stroke();
+        //colour in circle
+        ctx.fillStyle = "rgba(255, 255, 0, 0.56";
+        ctx.fill();
+        ctx.closePath();
+
+        //Draw pacman
+        // An arc with an opening at the right for the mouth
+        ctx.beginPath();
+        ctx.arc(555, 400, 150, 0.2 * Math.PI, 1.8 * Math.PI, false);
+        ctx.strokeStyle = "red";
+        // The mouth
+        // A line from the end of the arc to the centre
+        ctx.lineTo(550, 400);
+        // A line from the centre of the arc to the start
+        ctx.closePath();
+
+        // Fill the pacman shape with yellow
+        ctx.fillStyle = "yellow";
+        ctx.fill();
+
+        // Draw the red outline (optional)
+        ctx.stroke();
+
+        // Draw the eye
+        ctx.beginPath();
+        ctx.arc(550, 375, 10, 0, 2 * Math.PI, false);
+        ctx.fillStyle = "rgb(0, 0, 0)";
+        ctx.fill();
+
+        //timing a circle to drawing
+        function myFunction() {
+            ctx.beginPath();
+            ctx.arc(900, 400, 100, 0, 2 * Math.PI);
+            ctx.strokeStyle = "black";
+            ctx.stroke();
+            ctx.fillStyle = "rgba(0, 0, 255, 0.56";
+            ctx.fill();
+
+            //get rid of old blue circle
+            ctx.beginPath();
+            ctx.arc(800, 300, 101, 0, 2 * Math.PI);//radius +1 to get rid of outline
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.fillStyle = "white";
+            ctx.fill();
+        }
+
+        function myFunction1() {
+            //Draw pacman
+            // An arc with an opening at the right for the mouth
+            //I am closing the mouth on the ball
+            ctx.beginPath();
+            ctx.arc(850, 400, 150, 0.1 * Math.PI, 1.9 * Math.PI, false);
+
+            // The mouth
+            // A line from the end of the arc to the centre
+            ctx.lineTo(850, 400);
+
+            // A line from the centre of the arc to the start
+            ctx.closePath();
+
+            // Fill the pacman shape with yellow
+            ctx.fillStyle = "yellow";
+            ctx.fill();
+
+            // Draw the red outline (optional)
+            ctx.strokeStyle = "red";
+            ctx.stroke();
+
+            // Draw the eye
+            ctx.beginPath();
+            ctx.arc(850, 375, 10, 0, 2 * Math.PI, false);
+            ctx.fillStyle = "rgb(0, 0, 0)";
+            ctx.fill();
+
+            //Draw invisible pacman
+            // An arc with an opening at the right for the mouth
+            ctx.beginPath();
+            //Again I increase radius by 1 to make sure to cover the
+            //old one, and I increase the gap for the mouth
+            ctx.arc(555, 400, 151, 0.1 * Math.PI, 1.9 * Math.PI, false);
+            ctx.lineWidth = 4;
+            // The mouth
+            // A line from the end of the arc to the centre
+            ctx.lineTo(550, 399);
+
+            // A line from the centre of the arc to the start
+            ctx.closePath();
+
+            // Fill the pacman shape with white
+            ctx.fillStyle = "white";
+            ctx.fill();
+
+            // Draw the white outline (optional)
+            ctx.strokeStyle = "white";
+            ctx.stroke();
+        }
+    </script>
+
+</body>
+
+</html>

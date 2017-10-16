@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
+
+    <style type="text/css">
+        canvas {
+            background: pink;
+            border: 5px solid black;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <canvas id="canvasOne" height="600" width="800"></canvas>
+
+    <script type="text/javascript">
+        var canvas, canvasContext;
+
+        var i = 0; // Initialise loops
+        var turnSpeed = 0; // Control speed of the rotation
+
+        //first pizza, I will make this rotate
+        //The rotate method must be called not draw()
+        var pizza = new Pizza(100, 300, 50);
+        pizza.contains(100, 300);
+
+        var mediumPizza = new Pizza(500, 350, 100);
+        // Showing off the move method
+        mediumPizza.move(300, 200);
+        pizza.contains(285, 100);
+
+        var largePizza = new Pizza(400, 400, 150);
+        largePizza.move(500, 400);
+        pizza.contains(401, 401);
+
+        repeatme();
+
+        function repeatme() {
+            // Gets a handle to the element with id canvasOne.
+            canvas = document.getElementById("canvasOne");
+            // Set the canvas up for drawing in 2D.
+            ctx = canvas.getContext("2d");
+
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the smaller and larger green pizzas rotating!
+            pizza.rotate();
+            mediumPizza.draw();
+            largePizza.rotate();
+            // Animation request to allow rotation
+            window.requestAnimationFrame(repeatme);
+        }
+
+        //my constructor
+        function Pizza(x, y, radius) {
+
+            this.x = x; // coordinate x
+            this.y = y; // coordinate y
+            this.radius = radius;
+
+            // This moves the pizza to a new position by getting new x&y coordinates
+            this.move = function (posX, posY) {
+                this.x = posX; // Sets x to new posX
+                this.y = posY; // Sets y to new posY
+            };
+
+            // Resizes ball by changing the radius
+            this.resize = function (r) {
+                this.radius = r;
+            };
+
+            // Draw function will only be called by the medium pizza
+            //I decided to cut this one up too
+            this.draw = function () {
+                //begin the path
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+                ctx.fillStyle = 'green';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "black";
+                ctx.stroke();
+
+                //inner circle
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius - 15, 0, 2 * Math.PI, false);
+                ctx.fillStyle = 'green';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "black";
+                ctx.stroke();
+
+                var slices = 7;
+                var angle = Math.PI * 2;
+
+                //this is the equation to slice up the pizza.
+                //adapted from w3schools
+                for (i = 0; i <= slices; i++) {
+                    ctx.lineTo(this.radius * Math.cos(i * (angle / slices)) + this.x,
+                        this.radius * Math.sin(i * (angle / slices)) + this.y);
+                    ctx.stroke();
+                    ctx.moveTo(this.x, this.y);
+                }
+
+            };
+
+            // Rotate function, this is called by small and large pizzas
+            this.rotate = function () {
+                //begin the path
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+                ctx.fillStyle = 'green';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "black";
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius - 15, 0, 2 * Math.PI, false);
+                ctx.fillStyle = 'green';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "black";
+                ctx.stroke();
+
+                var slices = 7;
+                var angle = Math.PI * 2;
+
+                //
+                for (i = turnSpeed; i <= slices; i++) {
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.radius * Math.cos(i * (angle / slices)) + this.x, this.radius * Math.sin(i * (angle / slices)) + this.y);
+                    ctx.stroke();
+                }
+                turnSpeed += 0.01;//the lower the slower
+
+                if (turnSpeed >= 1) {
+                    turnSpeed = 0;
+                }
+            };
+
+            //This function checks if your contains coordinates are within the pizza
+            this.contains = function (posX, posY) {
+                // Use less than or equals to because the point can be IN or ON the circle, this includes the edges
+                if (Math.sqrt((posX - this.x) * (posX - this.x) + (posY - this.y) * (posY - this.y)) <= this.radius) {
+                    console.log(posX + ", " + posY + " is in the circle");
+                } else {
+                    console.log(posX + ", " + posY + " isn't in the circle")
+                }
+            };
+        }
+    </script>
+
+</body>
+
+</html>

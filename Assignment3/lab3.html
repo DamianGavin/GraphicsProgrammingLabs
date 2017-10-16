@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Damian_Gavin_lab3</title>
+
+    <style type="text/css">
+        canvas {
+            background: pink;
+            border: 5px solid black;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <canvas id="bouncyPizza" height="600" width="1000"></canvas>
+
+    <script type="text/javascript">
+        // Gets a handle to the element with id canvasOne.
+        canvas = document.getElementById("bouncyPizza");
+        // Set the canvas up for drawing in 2D.
+        ctx = canvas.getContext("2d");
+
+        var x_pizza = 200;//starting x coordinate
+        var y_pizza = 200;//y coordinate
+        var x_pizza_speed = 4;//This will control speed left to right
+        var y_pizza_speed = 4;//speed up and dowm
+        var r = 40;//radius
+        var increment = 0;//To rotate pizza. I will call in color_pizza()
+        //and after in draw_pizza()
+
+        //This function ties all together to produce the result
+        function repeatme() {
+            console.log(increment);//can follow the increments in tools
+            draw_pizza();//repeats this function 
+            move_pizza();//also repeatedly
+            window.requestAnimationFrame(repeatme);
+        }
+        //animation going.
+        repeatme();
+
+        //this function updates centre coordinates
+        function move_pizza() {
+            x_pizza += x_pizza_speed;//changes with speed
+            y_pizza += y_pizza_speed;
+
+            if ((x_pizza - r) < 0) {//If centre < 0(left)
+                x_pizza_speed *= -1;   //change direction
+                increment = 0.05;
+            }
+
+            if ((x_pizza + r) > canvas.width) {//(right)
+                x_pizza_speed *= -1;			  //change direction
+                increment = -0.05;
+            }
+
+            if ((y_pizza - r) < 0) {//top
+                y_pizza_speed *= -1;
+            }
+
+            if ((y_pizza + r) > canvas.height) {//bottom
+                y_pizza_speed *= -1;
+            }
+        }
+
+        function draw_pizza() {//calls color_pizza and is called
+            //by repeat, continuously clearing the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            color_pizza(x_pizza, y_pizza, r, "green");
+        }
+
+        function color_pizza(x, y, r, color) {//similar to rotate() from lab2
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "black";
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(x, y, r - (r * 0.20), 0, 2 * Math.PI, false);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "black";
+            ctx.stroke();
+
+            var slices = 7;
+            var angle = Math.PI * 2;
+
+            for (i = increment; i <= slices; i++) {
+                ctx.moveTo(x, y);
+                ctx.lineTo(r * Math.cos(i * (angle / slices)) + x, r * Math.sin
+                    (i * (angle / slices)) + y);
+                ctx.stroke();
+            }
+            //this is where the spped is determined
+            if (increment >= 0) {
+                increment += .05;
+            }
+
+            if (increment > 1) {
+                increment = 0;
+            }
+
+            if (increment < 0) {
+                increment += -.05;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
