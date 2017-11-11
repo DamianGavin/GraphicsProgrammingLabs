@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Damian_Gavin_lab4</title>
+
+    <style type="text/css">
+        canvas {
+            background: pink;
+            border: 5px solid black;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <canvas id="bouncyPizza" height="600" width="600"></canvas>
+
+    <script type="text/javascript">
+        // Gets a handle to the element with id canvasOne.
+        canvas = document.getElementById("bouncyPizza");
+        // Set the canvas up for drawing in 2D.
+        ctx = canvas.getContext("2d");
+
+        var x_pizza = 200;//starting x coordinate
+        var y_pizza = 200;//y coordinate
+        var x_pizza_speed = 4;//This will control speed left to right
+        var y_pizza_speed = 4;//speed up and dowm
+        var xvector = 1;
+        var yvector = 1;
+        var r = 40;//radius
+        var increment = 0;//To rotate pizza. I will call in color_pizza()
+        //and after in draw_pizza()
+
+        //This function ties all together to produce the result
+        function repeatme() {
+            //console.log(increment);//can follow the increments in tools
+            draw_pizza();//repeats this function 
+            move_pizza();//also repeatedly
+            color_pizza();
+            window.requestAnimationFrame(repeatme);
+        }
+        //animation going.
+        repeatme();
+
+        //this function updates centre coordinates
+        function move_pizza() {
+            x_pizza += x_pizza_speed;//changes with speed
+            y_pizza += y_pizza_speed;
+
+            if ((x_pizza - r) < 0) {//If centre < 0(left)
+                x_pizza_speed *= -1;   //change direction
+                increment = 0.05;
+            }
+
+            if ((x_pizza + r) > canvas.width) {//(right)
+                x_pizza_speed *= -1;			  //change direction
+                increment = -0.05;
+            }
+
+            if ((y_pizza - r) < 0) {//top
+                y_pizza_speed *= -1;
+            }
+
+            if ((y_pizza + r) > canvas.height) {//bottom
+                y_pizza_speed *= -1;
+            }
+        }
+
+        function draw_pizza() {//calls color_pizza and is called
+            //by repeat, continuously clearing the canvas
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            color_pizza(x_pizza, y_pizza, r, "green");
+        }
+
+        function color_pizza(x, y, r, color) {//similar to rotate() from lab2
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "black";
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(x, y, r - (r * 0.20), 0, 2 * Math.PI, false);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "black";
+            ctx.stroke();
+
+            var slices = 7;
+            var angle = Math.PI * 2;
+
+            for (i = increment; i <= slices; i++) {
+                ctx.moveTo(x, y);
+                ctx.lineTo(r * Math.cos(i * (angle / slices)) + x, r * Math.sin
+                    (i * (angle / slices)) + y);
+                ctx.stroke();
+            }
+            //this is where the spped is determined
+            if (increment >= 0) {
+                increment += .05;
+            }
+
+            if (increment > 1) {
+                increment = 0;
+            }
+
+            if (increment < 0) {
+                increment += -.05;
+            }
+        }
+        // Add a Javascript event listener to the keypress event.
+        window.addEventListener("keypress", function (event) {
+            // Just log the event to the console.
+            console.log(event);
+        });
+
+        canvas.addEventListener("click", function (event) {
+            //draw_pizza(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+            x_pizza = event.clientX - canvas.offsetLeft;
+            y_pizza = event.clientY - canvas.offsetTop;
+
+            console.log(event.clientX)
+        });
+
+
+        //keypress with jQuery
+        $(document.body).on('keydown', function (e) {
+            console.log(e.which);
+            switch (e.which) {
+                // key code for left arrow
+                case 37:
+                    //Check direction
+                    if (xvector > 0) {
+                        //if direction is positive (ball is moving right) slow it down
+                        x_pizza_speed--;
+                    } else {
+                        //if direction is negative (ball is moving left) speed it up
+                        x_pizza_speed++;
+                    }
+                    console.log('left arrow key pressed!' + x_pizza_speed);//console log
+                    break;
+
+                // key code for right arrow
+                case 39:
+                    //Check direction
+                    if (xvector < 0) {
+                        //if direction is negative (ball is moving left) slow it down
+                        x_pizza_speed--;
+                    } else {
+                        //if direction is positive (ball is moving right) speed it up
+                        x_pizza_speed++;
+                    }
+                    console.log('right arrow key pressed!' + x_pizza_speed);
+                    break;
+                // key code for up arrow
+                case 38:
+                    //Check direction
+                    if (yvector > 0) {
+                        //if direction is positive (ball is moving down) slow it down
+                        y_pizza_speed--;
+                    } else {
+                        //if direction is negative (ball is moving up) speed it up
+                        y_pizza_speed++;
+                    }
+                    console.log('up arrow key pressed!' + y_pizza_speed);
+                    break;
+
+                // key code for down arrow
+                case 40:
+                    //Check direction
+                    if (yvector < 0) {
+                        //if direction is negative (ball is moving up) slow it down
+                        y_pizza_speed--;
+                    } else {
+                        //if direction is positive (ball is moving down) speed it up
+                        y_pizza_speed++;
+                    }
+                    console.log('down arrow key pressed!' + y_pizza_speed);
+                    break;
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Damian_Gavin_lab6</title>
+
+    <style type="text/css">
+        canvas {
+            background: pink;
+            border: 5px solid black;
+        }
+    </style>
+
+</head>
+
+<body>
+    <canvas id="rotate" height="600" width="600"></canvas>
+    <script type="text/javascript">
+        var canvas = document.getElementById('rotate');
+        var ctx = canvas.getContext('2d');
+
+        //Keep track of animation time
+        var animationTime = 0;
+        //Number of steps
+        var nosteps = 0;
+        //Font size for rotating text
+        var fontSize = 35;
+        //Translate canvas to appropiately display pacman
+        ctx.translate(30, 30);//offset
+
+        //Pacman object takes an argument for radius
+        function Pacman(size) {
+
+            this.x = 0;
+            this.y = 0;
+            this.r = size;
+            //open detremine if mouth open or closed
+            this.open;
+            //Draw function
+            this.draw = function(open) {
+                this.open = open;
+                // An arc with an opening at the right for the mouth
+                ctx.beginPath();
+                if (open) {
+                    ctx.arc(this.x, this.y, this.r, 0.2 * Math.PI, 1.8 * Math.PI, false);
+                } else {
+                    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2, false);
+                }
+
+                // The mouth
+                // A line from the end of the arc to the centre
+                ctx.lineTo(this.x, this.y);
+                // A line from the centre of the arc to the start
+                ctx.closePath();
+                // Fill the pacman shape with green
+                ctx.fillStyle = "green";
+                ctx.fill();
+                // Draw the black outline
+                ctx.stroke();
+                //Set x and y coordinates for the eye (Relative to pacman position)
+                var x_eye = this.x + ((this.r / 2) * (Math.cos(Math.PI * 1.6)));
+                var y_eye = this.y + ((this.r / 2) * (Math.sin(Math.PI * 1.5)));
+                //Draw a circle
+                ctx.beginPath();
+                ctx.arc(x_eye, y_eye, this.r / 10, 0, Math.PI * 2, false);
+                //Fill it black
+                ctx.fillStyle = "black";
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        //Draw Text and increase its size
+        function rotatingText() {
+            //If text size gets too large
+            if (fontSize > 95) {
+                //set size to 15
+                fontSize = 15;
+            }
+            //Increase size every iteration
+            fontSize += 1;
+            //Set font and text size
+            ctx.font = fontSize + "px Verdana";
+            //Draw text in canvas
+            ctx.fillText("Turning", canvas.width / 2 - 65, canvas.height / 2);
+        }
+
+
+        //Clear canvas and restore it to a state
+        function clear() {
+            //Save canvas state
+            ctx.save();
+			//transform co-ords control in order.-Horizontal scaling, horizontal
+			//skewing, Vertical skewing, Vertical Scaling Horizontal move and
+			//Vertical moving
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            //clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //Draw square
+            path();
+            //If num of steps near 400 it's time to rotate
+            if ((nosteps > 490) && (nosteps < 500)) {
+                //Show Rotate text
+                rotatingText();
+            }
+            //Restore context state
+            ctx.restore();
+
+        }
+
+        function path() {
+            //Draw a square in the canvas as pacman's path
+            ctx.rect(canvas.offsetLeft + pac.r + 30, canvas.offsetTop + pac.r + 30, canvas.height - (pac.r) - (110), canvas.width - (pac.r) - (110));
+            ctx.stroke();
+
+        }
+
+        function repeatme() {
+            //Clear Canvas
+            //move canvas forward
+            ctx.transform(1, 0, 0, 1, 1, 0);
+            clear();
+            //Draw pacman
+            pac.draw(pac.open);
+            //Alternate mouth opening between open and closed for around 10 steps
+            if (pac.open && animationTime == 10) {
+                animationTime = 0;
+                pac.draw(false)
+            } else if (!(pac.open) && animationTime == 10) {
+                animationTime = 0;
+                pac.draw(true);
+            }
+            //Keep track of how long an animation has been active
+            animationTime++;
+            //Increase steps number
+            nosteps += 1;
+            //If number of steps is 540
+            if (nosteps == 540) {
+                //Rotate canvas 90 degrees
+                ctx.transform(Math.cos(90 * ((2 * Math.PI) / 360)), Math.sin(90 * ((2 * Math.PI) / 360)), -1 * (Math.sin(90 * ((2 * Math.PI) / 360))), Math.cos(90 * ((2 * Math.PI) / 360)), 0, 0);
+                //ctx.rotate(90*((2*Math.PI)/360));
+                //Clear canvas
+                clear();
+                //Reset number of steps
+                nosteps = 0;
+            }
+
+            //Recursive call
+            window.requestAnimationFrame(repeatme);
+        }
+
+        //Create pacman object set radius size to 25
+        var pac = new Pacman(25);
+        //Draw canvas with open mouth
+        pac.draw(true);
+
+        //Call recursive function
+        repeatme();
+    </script>
+</body>
+
+</html>
